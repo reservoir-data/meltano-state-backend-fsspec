@@ -145,5 +145,8 @@ warn_unused_ignores = true
 [tool.ruff]
 line-length = 88
 
+[tool.uv]
+prerelease = "allow"
+
 [tool.uv.sources]
 meltano = { git = "https://github.com/meltano/meltano.git" }
