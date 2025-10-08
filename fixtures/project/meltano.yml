@@ -1,0 +1,8 @@
+version: 1
+default_environment: dev
+project_id: 0199c554-2a3f-76fd-a819-e9ef104737a7
+environments:
+- name: dev
+send_anonymous_usage_stats: false
+state_backend:
+  uri: fsspec://path/to/state

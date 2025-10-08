@@ -1,0 +1,17 @@
+"""Meltano state backend fsspec."""
+
+from .manager import FSSpecStateStoreManager as FSSpecStateStoreManager
+from .settings import (
+    PROTOCOL as PROTOCOL,
+    STORAGE_OPTIONS as STORAGE_OPTIONS,
+    S3_KEY as S3_KEY,
+    S3_SECRET as S3_SECRET,
+    S3_ENDPOINT_URL as S3_ENDPOINT_URL,
+    S3_REGION as S3_REGION,
+    GCS_PROJECT as GCS_PROJECT,
+    GCS_TOKEN as GCS_TOKEN,
+    GCS_ENDPOINT_URL as GCS_ENDPOINT_URL,
+    AZURE_CONNECTION_STRING as AZURE_CONNECTION_STRING,
+    AZURE_ACCOUNT_NAME as AZURE_ACCOUNT_NAME,
+    AZURE_ACCOUNT_KEY as AZURE_ACCOUNT_KEY,
+)
