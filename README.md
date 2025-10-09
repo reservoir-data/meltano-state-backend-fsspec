@@ -7,6 +7,12 @@ A state backend for the Meltano platform that uses FSSpec to store state in a fi
 - [X] Supports all filesystems that FSSpec supports
 - [X] Supports all storage options that FSSpec supports
 
+## Installation
+
+```shell
+uv tool install --with 'meltano-state-backend-fsspec[s3] @ https://github.com/reservoir-data/meltano-state-backend-fsspec' meltano
+```
+
 ## Configuration
 
 The `state_backend.fsspec.protocol` setting is required, and it can be any FSSpec-supported protocol.
