@@ -69,9 +69,6 @@ def test_load_s3_settings(project: Project, monkeypatch: pytest.MonkeyPatch) -> 
         "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_S3_ENDPOINT_URL",
         "https://my-endpoint.com",
     )
-    monkeypatch.setenv(
-        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_S3_REGION", "us-east-1"
-    )
     manager = state_store_manager_from_project_settings(project.settings)
 
     assert isinstance(manager, FSSpecStateStoreManager)
@@ -82,7 +79,6 @@ def test_load_s3_settings(project: Project, monkeypatch: pytest.MonkeyPatch) -> 
         "key": "my_key",
         "secret": "my_secret",
         "endpoint_url": "https://my-endpoint.com",
-        "region": "us-east-1",
     }
 
 

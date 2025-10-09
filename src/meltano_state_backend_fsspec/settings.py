@@ -30,11 +30,6 @@ S3_ENDPOINT_URL = SettingDefinition(
     description="The URL of the S3 endpoint to use.",
     kind=SettingKind.STRING,
 )
-S3_REGION = SettingDefinition(
-    name="state_backend.fsspec.storage_options.s3.region",
-    description="The region of the S3 endpoint to use.",
-    kind=SettingKind.STRING,
-)
 
 GCS_PROJECT = SettingDefinition(
     name="state_backend.fsspec.storage_options.gcs.project",
