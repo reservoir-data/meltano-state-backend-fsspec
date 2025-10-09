@@ -61,9 +61,13 @@ def test_load_local_settings(project: Project, monkeypatch: pytest.MonkeyPatch) 
 
 def test_load_s3_settings(project: Project, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("MELTANO_STATE_BACKEND_FSSPEC_PROTOCOL", "s3")
-    monkeypatch.setenv("MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_S3_KEY", "my_key")
     monkeypatch.setenv(
-        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_S3_SECRET", "my_secret"
+        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_S3_KEY",
+        "my_key",
+    )
+    monkeypatch.setenv(
+        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_S3_SECRET",
+        "my_secret",
     )
     monkeypatch.setenv(
         "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_S3_ENDPOINT_URL",
@@ -139,7 +143,8 @@ def test_load_arbitrary_settings(
 ) -> None:
     monkeypatch.setenv("MELTANO_STATE_BACKEND_FSSPEC_PROTOCOL", "sftp")
     monkeypatch.setenv(
-        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS", '{"sftp.foo": "bar", "sftp.baz": "qux"}'
+        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS",
+        '{"sftp.foo": "bar", "sftp.baz": "qux"}',
     )
     manager = state_store_manager_from_project_settings(project.settings)
     assert isinstance(manager, FSSpecStateStoreManager)
