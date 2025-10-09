@@ -40,3 +40,16 @@ If you need to support a filesystem that FSSpec does not support out of the box,
 ```shell
 meltano config meltano set state_backend.fsspec.storage_options '{"sftp.foo": "bar", "sftp.baz": "qux"}'
 ```
+
+### Examples
+
+```yaml
+state_backend:
+  uri: fsspec://path/to/state
+  protocol: s3
+  storage_options:
+    s3:
+      key: my_key
+      secret: my_secret
+      endpoint_url: https://my-endpoint.com
+```
