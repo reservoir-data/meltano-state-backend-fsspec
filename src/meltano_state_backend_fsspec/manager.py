@@ -129,7 +129,8 @@ class FSSpecStateStoreManager(StateStoreManager):
         """Set the state for the given state_id."""
         logger.info("Writing state to %s", self.label)
         self.mkdir(state.state_id)
-        self.get_state_file(state.state_id).write_text(state.json())
+        with self.get_state_file(state.state_id).open("w", ContentType="application/json") as writer:
+            writer.write(state.json())
 
     @override
     def get(self, state_id: str) -> MeltanoState | None:
