@@ -5,4 +5,4 @@ environments:
 - name: dev
 send_anonymous_usage_stats: false
 state_backend:
-  uri: fsspec://path/to/state
+  uri: fs://path/to/state

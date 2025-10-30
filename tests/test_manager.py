@@ -18,7 +18,7 @@ import time_machine
 
 def test_manager() -> None:
     manager = FSSpecStateStoreManager(
-        uri="fsspec:///tmp/test",
+        uri="fs:///tmp/test",
         protocol="file",
         storage_options={},
     )
@@ -28,7 +28,7 @@ def test_manager() -> None:
 
 def test_s3_protocol() -> None:
     manager = FSSpecStateStoreManager(
-        uri="fsspec://my-bucket/path/to/state",
+        uri="fs://my-bucket/path/to/state",
         protocol="s3",
         storage_options={},
     )
@@ -48,7 +48,7 @@ def project(tmp_path: Path) -> Project:
 
 
 def test_load_local_settings(project: Project, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("MELTANO_STATE_BACKEND_FSSPEC_PROTOCOL", "file")
+    monkeypatch.setenv("MELTANO_STATE_BACKEND_FS_PROTOCOL", "file")
     manager = state_store_manager_from_project_settings(project.settings)
     assert isinstance(manager, FSSpecStateStoreManager)
     assert isinstance(manager.path, LocalPath)
@@ -60,17 +60,17 @@ def test_load_local_settings(project: Project, monkeypatch: pytest.MonkeyPatch) 
 
 
 def test_load_s3_settings(project: Project, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("MELTANO_STATE_BACKEND_FSSPEC_PROTOCOL", "s3")
+    monkeypatch.setenv("MELTANO_STATE_BACKEND_FS_PROTOCOL", "s3")
     monkeypatch.setenv(
-        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_S3_KEY",
+        "MELTANO_STATE_BACKEND_FS_STORAGE_OPTIONS_S3_KEY",
         "my_key",
     )
     monkeypatch.setenv(
-        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_S3_SECRET",
+        "MELTANO_STATE_BACKEND_FS_STORAGE_OPTIONS_S3_SECRET",
         "my_secret",
     )
     monkeypatch.setenv(
-        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_S3_ENDPOINT_URL",
+        "MELTANO_STATE_BACKEND_FS_STORAGE_OPTIONS_S3_ENDPOINT_URL",
         "https://my-endpoint.com",
     )
     manager = state_store_manager_from_project_settings(project.settings)
@@ -87,15 +87,15 @@ def test_load_s3_settings(project: Project, monkeypatch: pytest.MonkeyPatch) -> 
 
 
 def test_load_gcs_settings(project: Project, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("MELTANO_STATE_BACKEND_FSSPEC_PROTOCOL", "gcs")
+    monkeypatch.setenv("MELTANO_STATE_BACKEND_FS_PROTOCOL", "gcs")
     monkeypatch.setenv(
-        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_GCS_PROJECT", "my-project"
+        "MELTANO_STATE_BACKEND_FS_STORAGE_OPTIONS_GCS_PROJECT", "my-project"
     )
     monkeypatch.setenv(
-        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_GCS_TOKEN", "my-token"
+        "MELTANO_STATE_BACKEND_FS_STORAGE_OPTIONS_GCS_TOKEN", "my-token"
     )
     monkeypatch.setenv(
-        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_GCS_ENDPOINT_URL",
+        "MELTANO_STATE_BACKEND_FS_STORAGE_OPTIONS_GCS_ENDPOINT_URL",
         "https://my-endpoint.com",
     )
     manager = state_store_manager_from_project_settings(project.settings)
@@ -112,17 +112,17 @@ def test_load_gcs_settings(project: Project, monkeypatch: pytest.MonkeyPatch) ->
 
 
 def test_load_azure_settings(project: Project, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("MELTANO_STATE_BACKEND_FSSPEC_PROTOCOL", "azure")
+    monkeypatch.setenv("MELTANO_STATE_BACKEND_FS_PROTOCOL", "azure")
     monkeypatch.setenv(
-        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_AZURE_CONNECTION_STRING",
+        "MELTANO_STATE_BACKEND_FS_STORAGE_OPTIONS_AZURE_CONNECTION_STRING",
         "my-connection-string",
     )
     monkeypatch.setenv(
-        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_AZURE_ACCOUNT_NAME",
+        "MELTANO_STATE_BACKEND_FS_STORAGE_OPTIONS_AZURE_ACCOUNT_NAME",
         "my-account-name",
     )
     monkeypatch.setenv(
-        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS_AZURE_ACCOUNT_KEY",
+        "MELTANO_STATE_BACKEND_FS_STORAGE_OPTIONS_AZURE_ACCOUNT_KEY",
         "my-account-key",
     )
     manager = state_store_manager_from_project_settings(project.settings)
@@ -141,9 +141,9 @@ def test_load_azure_settings(project: Project, monkeypatch: pytest.MonkeyPatch) 
 def test_load_arbitrary_settings(
     project: Project, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setenv("MELTANO_STATE_BACKEND_FSSPEC_PROTOCOL", "sftp")
+    monkeypatch.setenv("MELTANO_STATE_BACKEND_FS_PROTOCOL", "sftp")
     monkeypatch.setenv(
-        "MELTANO_STATE_BACKEND_FSSPEC_STORAGE_OPTIONS",
+        "MELTANO_STATE_BACKEND_FS_STORAGE_OPTIONS",
         '{"sftp.foo": "bar", "sftp.baz": "qux"}',
     )
     manager = state_store_manager_from_project_settings(project.settings)
@@ -161,7 +161,7 @@ def test_load_arbitrary_settings(
 @pytest.fixture
 def manager(tmp_path: Path) -> FSSpecStateStoreManager:
     return FSSpecStateStoreManager(
-        uri=f"fsspec://{tmp_path}",
+        uri=f"fs://{tmp_path}",
         protocol="file",
         storage_options={},
     )

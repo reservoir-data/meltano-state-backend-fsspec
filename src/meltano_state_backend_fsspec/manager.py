@@ -50,7 +50,7 @@ class FSSpecStateStoreManager(StateStoreManager):
         super().__init__(**kwargs)
         self._path: UPath | LocalPath | None = None
         protocol = PROTOCOL_MAPPING.get(protocol, protocol)
-        self._fsuri = uri.replace("fsspec://", f"{protocol}://")
+        self._fsuri = uri.replace("fs://", f"{protocol}://")
         self.lock_timeout_seconds = lock_timeout_seconds
         self.lock_retry_seconds = lock_retry_seconds
 
@@ -138,7 +138,7 @@ class FSSpecStateStoreManager(StateStoreManager):
         logger.info("Reading state from %s", self.label)
         try:
             with self.get_state_file(state_id).open() as reader:
-                return MeltanoState.from_file(state_id, reader)  # type: ignore[arg-type]
+                return MeltanoState.from_file(state_id, reader)
         except FileNotFoundError:
             logger.info("No state found for %s.", state_id)
             return None
