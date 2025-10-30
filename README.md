@@ -15,37 +15,37 @@ uv tool install --with 'meltano-state-backend-fsspec[s3] @ https://github.com/re
 
 ## Configuration
 
-The `state_backend.fsspec.protocol` setting is required, and it can be any FSSpec-supported protocol.
+The `state_backend.fs.protocol` setting is required, and it can be any FSSpec-supported protocol.
 
 The S3, GCS, and Azure storage options have first-class settings support:
 
 - S3:
-  - `state_backend.fsspec.storage_options.s3.key`
-  - `state_backend.fsspec.storage_options.s3.secret`
-  - `state_backend.fsspec.storage_options.s3.endpoint_url`
-  - `state_backend.fsspec.storage_options.s3.region`
+  - `state_backend.fs.storage_options.s3.key`
+  - `state_backend.fs.storage_options.s3.secret`
+  - `state_backend.fs.storage_options.s3.endpoint_url`
+  - `state_backend.fs.storage_options.s3.region`
 - GCS:
-  - `state_backend.fsspec.storage_options.gcs.project`
-  - `state_backend.fsspec.storage_options.gcs.token`
-  - `state_backend.fsspec.storage_options.gcs.endpoint_url`
+  - `state_backend.fs.storage_options.gcs.project`
+  - `state_backend.fs.storage_options.gcs.token`
+  - `state_backend.fs.storage_options.gcs.endpoint_url`
 - Azure:
-  - `state_backend.fsspec.storage_options.azure.connection_string`
-  - `state_backend.fsspec.storage_options.azure.account_name`
-  - `state_backend.fsspec.storage_options.azure.account_key`
+  - `state_backend.fs.storage_options.azure.connection_string`
+  - `state_backend.fs.storage_options.azure.account_name`
+  - `state_backend.fs.storage_options.azure.account_key`
 
 ### Arbitrary storage options
 
-If you need to support a filesystem that FSSpec does not support out of the box, you can use the `state_backend.fsspec.storage_options` setting to configure the storage options:
+If you need to support a filesystem that FSSpec does not support out of the box, you can use the `state_backend.fs.storage_options` setting to configure the storage options:
 
 ```shell
-meltano config meltano set state_backend.fsspec.storage_options '{"sftp.foo": "bar", "sftp.baz": "qux"}'
+meltano config meltano set state_backend.fs.storage_options '{"sftp.foo": "bar", "sftp.baz": "qux"}'
 ```
 
 ### Examples
 
 ```yaml
 state_backend:
-  uri: fsspec://path/to/state
+  uri: fs://path/to/state
   protocol: s3
   storage_options:
     s3:

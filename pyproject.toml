@@ -57,7 +57,7 @@ azure_account_name = "meltano_state_backend_fsspec:AZURE_ACCOUNT_NAME"
 azure_account_key = "meltano_state_backend_fsspec:AZURE_ACCOUNT_KEY"
 
 [project.entry-points."meltano.state_backends"]
-fsspec = "meltano_state_backend_fsspec:FSSpecStateStoreManager"
+fs = "meltano_state_backend_fsspec:FSSpecStateStoreManager"
 
 [tool.tox]
 min_version = "4.22"
