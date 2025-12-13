@@ -34,7 +34,9 @@ dev = [
 ]
 testing = [
     "coverage>=7.10.7",
+    "fsspec[s3]",
     "pytest>=8.4.2",
+    "testcontainers[minio]>=4.13.3",
     "time-machine>=2.19.0",
 ]
 typing = [
@@ -136,6 +138,7 @@ exclude_also = [
 
 [tool.mypy]
 enable_error_code = [ "ignore-without-code", "redundant-expr", "truthy-bool" ]
+follow_untyped_imports = true
 strict = true
 warn_unreachable = true
 warn_unused_configs = true

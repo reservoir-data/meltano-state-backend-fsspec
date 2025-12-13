@@ -1,3 +1,4 @@
+import contextlib
 import logging
 import sys
 from contextlib import contextmanager
@@ -114,7 +115,9 @@ class FSSpecStateStoreManager(StateStoreManager):
         try:
             with lock_path.open() as reader:
                 if utc_now() > (float(reader.read()) + self.lock_timeout_seconds):
-                    lock_path.unlink(missing_ok=True)
+                    with contextlib.suppress(FileNotFoundError, OSError):
+                        # Use fs.rm_file() to avoid Content-MD5 issues with MinIO
+                        lock_path.fs.rm_file(lock_path.path)  # type: ignore[no-untyped-call]
                     return False
                 return True
         except FileNotFoundError:
@@ -129,7 +132,10 @@ class FSSpecStateStoreManager(StateStoreManager):
         """Set the state for the given state_id."""
         logger.info("Writing state to %s", self.label)
         self.mkdir(state.state_id)
-        with self.get_state_file(state.state_id).open("w", ContentType="application/json") as writer:
+        with self.get_state_file(state.state_id).open(
+            "w",
+            ContentType="application/json",
+        ) as writer:
             writer.write(state.json())
 
     @override
@@ -146,13 +152,35 @@ class FSSpecStateStoreManager(StateStoreManager):
     @override
     def delete(self, state_id: str) -> None:
         """Delete the state for the given state_id."""
-        self.get_state_file(state_id).unlink(missing_ok=True)
+        state_dir = self.path.joinpath(state_id)
+        if not state_dir.exists():
+            return
+
+        # Delete files individually to avoid Content-MD5 issues with MinIO's DeleteObjects
+        for file_path in state_dir.iterdir():
+            with contextlib.suppress(FileNotFoundError, OSError):
+                file_path.fs.rm_file(file_path.path)  # type: ignore[no-untyped-call]
+
+        # Remove the directory itself
+        with contextlib.suppress(FileNotFoundError, OSError):
+            state_dir.rmdir()
 
     @override
     def get_state_ids(self, pattern: str | None = None) -> Iterable[str]:
         """Get the state ids for the given pattern."""
+        if not self.path.exists():
+            return []
         paths = self.path.glob(pattern) if pattern else self.path.iterdir()
         return [path.name for path in paths if path.joinpath("state.json").exists()]
+
+    @override
+    def clear_all(self) -> int:
+        """Clear all state."""
+        count = 0
+        for state_id in list(self.get_state_ids()):
+            self.delete(state_id)
+            count += 1
+        return count
 
     @override
     @contextmanager
@@ -173,4 +201,9 @@ class FSSpecStateStoreManager(StateStoreManager):
                 writer.write(str(utc_now()))
             yield
         finally:
-            lock_path.unlink(missing_ok=True)
+            try:
+                # Use fs.rm_file() to avoid Content-MD5 issues with MinIO
+                lock_path.fs.rm_file(lock_path.path)  # type: ignore[no-untyped-call]
+            except (FileNotFoundError, OSError):
+                # Lock file already deleted or permission error
+                pass
