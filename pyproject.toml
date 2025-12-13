@@ -34,9 +34,8 @@ dev = [
 ]
 testing = [
     "coverage>=7.10.7",
-    "fsspec[s3]",
     "pytest>=8.4.2",
-    "testcontainers[minio]>=4.13.3",
+    "testcontainers[azurite,minio]>=4.13.3",
     "time-machine>=2.19.0",
 ]
 typing = [
@@ -77,6 +76,7 @@ env_list = [
 [tool.tox.env_run_base]
 runner = "uv-venv-lock-runner"
 dependency_groups = [ "testing" ]
+extras = [ "azure", "s3" ]
 commands = [ [ "coverage", "run", "-m", "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]
 
 [tool.tox.env.coverage]
@@ -148,7 +148,7 @@ warn_unused_ignores = true
 line-length = 88
 
 [tool.uv]
-prerelease = "allow"
+required-version = ">=0.9.17"
 
 [tool.uv.sources]
 meltano = { git = "https://github.com/meltano/meltano.git" }

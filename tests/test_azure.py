@@ -3,30 +3,26 @@ import uuid
 from collections.abc import Generator
 
 import pytest
-from testcontainers.minio import MinioContainer
+from testcontainers.azurite import AzuriteContainer
 from meltano.core.state_store import MeltanoState
 
 from meltano_state_backend_fsspec import FSSpecStateStoreManager
 
 
 @pytest.fixture(scope="module")
-def minio() -> Generator[MinioContainer, None, None]:
-    with MinioContainer() as minio:
-        client = minio.get_client()
-        client.make_bucket("state")
-        yield minio
+def azurite() -> Generator[AzuriteContainer, None, None]:
+    with AzuriteContainer() as azurite:
+        yield azurite
 
 
 @pytest.fixture
-def manager(minio: MinioContainer) -> FSSpecStateStoreManager:
+def manager(azurite: AzuriteContainer) -> FSSpecStateStoreManager:
     prefix = str(uuid.uuid4())
     return FSSpecStateStoreManager(
         uri=f"fs://state/{prefix}",
-        protocol="s3",
+        protocol="azure",
         storage_options={
-            "s3.key": minio.access_key,
-            "s3.secret": minio.secret_key,
-            "s3.endpoint_url": f"http://{minio.get_container_host_ip()}:{minio.get_exposed_port(9000)}",
+            "azure.connection_string": azurite.get_connection_string(),
         },
     )
 

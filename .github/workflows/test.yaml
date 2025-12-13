@@ -29,7 +29,7 @@ concurrency:
 env:
   FORCE_COLOR: 1
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: 0.9.13
+  UV_VERSION: 0.9.17
   # renovate: datasource=pypi depName=tox
   TOX_VERSION: 4.32.0
   # renovate: datasource=pypi depName=tox-uv
@@ -83,8 +83,6 @@ jobs:
           --with tox-uv==${{ env.TOX_UV_VERSION }}
           --with tox==${{ env.TOX_VERSION }}
           tox -e ${{ matrix.python-version }}
-        env:
-          UV_PRERELEASE: "allow"
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           include-hidden-files: true
