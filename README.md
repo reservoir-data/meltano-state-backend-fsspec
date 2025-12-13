@@ -35,7 +35,7 @@ The S3, GCS, and Azure storage options have first-class settings support:
 
 ### Arbitrary storage options
 
-If you need to support a filesystem that FSSpec does not support out of the box, you can use the `state_backend.fs.storage_options` setting to configure the storage options:
+If you need to use a filesystem that FSSpec does not support out of the box, you can use the `state_backend.fs.storage_options` setting to configure the storage options:
 
 ```shell
 meltano config meltano set state_backend.fs.storage_options '{"sftp.foo": "bar", "sftp.baz": "qux"}'
