@@ -17,7 +17,7 @@ uv tool install --with 'meltano-state-backend-fsspec[s3] @ https://github.com/re
 
 The `state_backend.fs.protocol` setting is required, and it can be any FSSpec-supported protocol.
 
-The S3, GCS, and Azure storage options have first-class settings support:
+The S3, GCS, Azure, and SFTP storage options have first-class settings support:
 
 - S3:
   - `state_backend.fs.storage_options.s3.key`
@@ -32,6 +32,14 @@ The S3, GCS, and Azure storage options have first-class settings support:
   - `state_backend.fs.storage_options.azure.connection_string`
   - `state_backend.fs.storage_options.azure.account_name`
   - `state_backend.fs.storage_options.azure.account_key`
+- SFTP:
+  - `state_backend.fs.storage_options.sftp.host`
+  - `state_backend.fs.storage_options.sftp.port`
+  - `state_backend.fs.storage_options.sftp.username`
+  - `state_backend.fs.storage_options.sftp.password`
+  - `state_backend.fs.storage_options.sftp.pkey` (key content)
+  - `state_backend.fs.storage_options.sftp.key_filename` (path to key file)
+  - `state_backend.fs.storage_options.sftp.passphrase` (passphrase for the private key if encrypted)
 
 ### Arbitrary storage options
 
@@ -43,6 +51,8 @@ meltano config meltano set state_backend.fs.storage_options '{"sftp.foo": "bar",
 
 ### Examples
 
+#### S3
+
 ```yaml
 state_backend:
   uri: fs://path/to/state
@@ -52,4 +62,51 @@ state_backend:
       key: my_key
       secret: my_secret
       endpoint_url: https://my-endpoint.com
+```
+
+#### SFTP with Password Authentication
+
+```yaml
+state_backend:
+  uri: fs://path/to/state
+  protocol: sftp
+  storage_options:
+    sftp:
+      host: sftp.example.com
+      port: 22
+      username: my_user
+      password: my_password
+```
+
+#### SFTP with SSH Key Authentication (using key file)
+
+```yaml
+state_backend:
+  uri: fs://path/to/state
+  protocol: sftp
+  storage_options:
+    sftp:
+      host: sftp.example.com
+      port: 22
+      username: my_user
+      key_filename: /path/to/private/key
+      passphrase: optional_passphrase
+```
+
+#### SFTP with SSH Key Authentication (using key content)
+
+```yaml
+state_backend:
+  uri: fs://path/to/state
+  protocol: sftp
+  storage_options:
+    sftp:
+      host: sftp.example.com
+      port: 22
+      username: my_user
+      pkey: |
+        -----BEGIN RSA PRIVATE KEY-----
+        ...key content here...
+        -----END RSA PRIVATE KEY-----
+      passphrase: optional_passphrase
 ```
