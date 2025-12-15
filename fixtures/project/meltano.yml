@@ -1,4 +1,4 @@
-version: 1
+requires_meltano: ">=4.0"
 default_environment: dev
 project_id: 0199c554-2a3f-76fd-a819-e9ef104737a7
 environments:
