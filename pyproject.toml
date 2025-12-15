@@ -1,64 +1,114 @@
+[build-system]
+build-backend = "uv_build"
+requires = [ "uv-build>=0.9.13,<0.10" ]
+
 [project]
 name = "meltano-state-backend-fsspec"
 version = "0.1.0"
 description = "A state backend for Meltano that uses fsspec to support arbitrary filesystems."
 readme = "README.md"
 authors = [
-    { name = "Edgar Ramírez Mondragón", email = "edgarrm358@gmail.com" }
+  { name = "Edgar Ramírez Mondragón", email = "edgarrm358@gmail.com" },
 ]
 requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
 dependencies = [
-    "fsspec>=2025.9.0",
-    "meltano>=3.9.0",
-    "typing-extensions>=4.15.0 ; python_full_version < '3.12'",
-    "universal-pathlib>=0.3",
+  "fsspec>=2025.9",
+  "meltano>=3.9",
+  "typing-extensions>=4.15; python_full_version<'3.12'",
+  "universal-pathlib>=0.3",
 ]
 optional-dependencies.azure = [
-    "fsspec[abfs]",
+  "fsspec[abfs]",
 ]
 optional-dependencies.gcs = [
-    "fsspec[gcs]",
+  "fsspec[gcs]",
 ]
 optional-dependencies.s3 = [
-    "fsspec[s3]",
+  "fsspec[s3]",
+]
+optional-dependencies.sftp = [
+  "fsspec[sftp]",
 ]
 
-[build-system]
-requires = ["uv_build>=0.9.13,<0.10.0"]
-build-backend = "uv_build"
+entry-points."meltano.settings".azure_account_key = "meltano_state_backend_fsspec:AZURE_ACCOUNT_KEY"
+entry-points."meltano.settings".azure_account_name = "meltano_state_backend_fsspec:AZURE_ACCOUNT_NAME"
+entry-points."meltano.settings".azure_connection_string = "meltano_state_backend_fsspec:AZURE_CONNECTION_STRING"
+entry-points."meltano.settings".gcs_endpoint_url = "meltano_state_backend_fsspec:GCS_ENDPOINT_URL"
+entry-points."meltano.settings".gcs_project = "meltano_state_backend_fsspec:GCS_PROJECT"
+entry-points."meltano.settings".gcs_token = "meltano_state_backend_fsspec:GCS_TOKEN"
+entry-points."meltano.settings".protocol = "meltano_state_backend_fsspec:PROTOCOL"
+entry-points."meltano.settings".s3_endpoint_url = "meltano_state_backend_fsspec:S3_ENDPOINT_URL"
+entry-points."meltano.settings".s3_key = "meltano_state_backend_fsspec:S3_KEY"
+entry-points."meltano.settings".s3_secret = "meltano_state_backend_fsspec:S3_SECRET"
+entry-points."meltano.settings".sftp_host = "meltano_state_backend_fsspec:SFTP_HOST"
+entry-points."meltano.settings".sftp_key_filename = "meltano_state_backend_fsspec:SFTP_PRIVATE_KEY_FILE"
+entry-points."meltano.settings".sftp_passphrase = "meltano_state_backend_fsspec:SFTP_PRIVATE_KEY_PASS"
+entry-points."meltano.settings".sftp_password = "meltano_state_backend_fsspec:SFTP_PASSWORD"
+entry-points."meltano.settings".sftp_port = "meltano_state_backend_fsspec:SFTP_PORT"
+entry-points."meltano.settings".sftp_private_key = "meltano_state_backend_fsspec:SFTP_PRIVATE_KEY"
+entry-points."meltano.settings".sftp_username = "meltano_state_backend_fsspec:SFTP_USERNAME"
+entry-points."meltano.settings".storage_options = "meltano_state_backend_fsspec:STORAGE_OPTIONS"
+entry-points."meltano.state_backends".fs = "meltano_state_backend_fsspec:FSSpecStateStoreManager"
 
 [dependency-groups]
 dev = [
-    { include-group = "testing" },
-    { include-group = "typing" },
+  { include-group = "testing" },
+  { include-group = "typing" },
 ]
 testing = [
-    "coverage>=7.10.7",
-    "pytest>=8.4.2",
-    "testcontainers[azurite,minio]>=4.13.3",
-    "time-machine>=2.19.0",
+  "coverage>=7.10.7",
+  "pytest>=8.4.2",
+  "testcontainers[azurite,minio,sftp]>=4.13.3",
+  "time-machine>=2.19",
 ]
 typing = [
-    "backports-strenum>=1.3.1",
-    "mypy>=1.18.2",
-    "ty>=0.0.1a21",
+  "backports-strenum>=1.3.1",
+  "mypy>=1.18.2",
+  "ty>=0.0.1a21",
 ]
 
-[project.entry-points."meltano.settings"]
-protocol = "meltano_state_backend_fsspec:PROTOCOL"
-storage_options = "meltano_state_backend_fsspec:STORAGE_OPTIONS"
-s3_key = "meltano_state_backend_fsspec:S3_KEY"
-s3_secret = "meltano_state_backend_fsspec:S3_SECRET"
-s3_endpoint_url = "meltano_state_backend_fsspec:S3_ENDPOINT_URL"
-gcs_project = "meltano_state_backend_fsspec:GCS_PROJECT"
-gcs_token = "meltano_state_backend_fsspec:GCS_TOKEN"
-gcs_endpoint_url = "meltano_state_backend_fsspec:GCS_ENDPOINT_URL"
-azure_connection_string = "meltano_state_backend_fsspec:AZURE_CONNECTION_STRING"
-azure_account_name = "meltano_state_backend_fsspec:AZURE_ACCOUNT_NAME"
-azure_account_key = "meltano_state_backend_fsspec:AZURE_ACCOUNT_KEY"
+[tool.uv]
+required-version = ">=0.9.17"
 
-[project.entry-points."meltano.state_backends"]
-fs = "meltano_state_backend_fsspec:FSSpecStateStoreManager"
+[tool.uv.sources]
+meltano = { git = "https://github.com/meltano/meltano.git" }
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+extend-select = [
+  "TC",
+  "UP",
+]
+
+[tool.coverage.paths]
+package = [
+  "src/meltano_state_backend_fsspec/",
+  "*/site-packages/meltano_state_backend_fsspec/",
+]
+
+[tool.coverage.run]
+branch = true
+source = [
+  "meltano_state_backend_fsspec",
+  "tests",
+]
+parallel = true
+relative_files = true
+
+[tool.coverage.report]
+exclude_also = [
+  '''if (t\.)?TYPE_CHECKING:''',
+]
 
 [tool.tox]
 min_version = "4.22"
@@ -76,7 +126,7 @@ env_list = [
 [tool.tox.env_run_base]
 runner = "uv-venv-lock-runner"
 dependency_groups = [ "testing" ]
-extras = [ "azure", "s3" ]
+extras = [ "azure", "s3", "sftp" ]
 commands = [ [ "coverage", "run", "-m", "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]
 
 [tool.tox.env.coverage]
@@ -115,27 +165,6 @@ commands = [
   ],
 ]
 
-
-[tool.coverage.paths]
-package = [
-  "src/meltano_state_backend_fsspec/",
-  "*/site-packages/meltano_state_backend_fsspec/",
-]
-
-[tool.coverage.run]
-branch = true
-source = [
-  "meltano_state_backend_fsspec",
-  "tests",
-]
-parallel = true
-relative_files = true
-
-[tool.coverage.report]
-exclude_also = [
-  '''if (t\.)?TYPE_CHECKING:''',
-]
-
 [tool.mypy]
 enable_error_code = [ "ignore-without-code", "redundant-expr", "truthy-bool" ]
 follow_untyped_imports = true
@@ -143,12 +172,3 @@ strict = true
 warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
-
-[tool.ruff]
-line-length = 88
-
-[tool.uv]
-required-version = ">=0.9.17"
-
-[tool.uv.sources]
-meltano = { git = "https://github.com/meltano/meltano.git" }

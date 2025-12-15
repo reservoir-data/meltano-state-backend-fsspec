@@ -1,15 +1,21 @@
+from __future__ import annotations
+
 import contextlib
+import io
 import logging
 import sys
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from time import sleep
-from typing import Any
-from collections.abc import Iterable, Generator
+from typing import TYPE_CHECKING, Any
 
 from meltano.core.state_store import MeltanoState, StateStoreManager
 from upath import UPath
-from upath.implementations.local import LocalPath
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Generator
+    from upath.implementations.local import LocalPath
+    from paramiko.pkey import PKey
 
 if sys.version_info >= (3, 12):
     from typing import override
@@ -21,6 +27,36 @@ logger = logging.getLogger(__name__)
 
 def utc_now() -> float:
     return datetime.now(timezone.utc).timestamp()
+
+
+def _guess_key_class(pkey: str, *, passphrase: str | None = None) -> PKey:
+    from paramiko.ed25519key import Ed25519Key
+    from paramiko.rsakey import RSAKey
+    from paramiko.ecdsakey import ECDSAKey
+    from paramiko.ssh_exception import SSHException
+
+    # Try loading the key using paramiko's key classes
+    # The order matters - try most common types first
+    for key_class in (Ed25519Key, RSAKey, ECDSAKey):
+        try:
+            return key_class.from_private_key(  # type: ignore[no-any-return, no-untyped-call]
+                io.StringIO(pkey),
+                password=passphrase,
+            )
+        except SSHException:
+            continue
+    raise ValueError("SFTP private key is not in a valid format")
+
+
+def _preprocess_storage_options(
+    protocol: str,
+    options: dict[str, Any | None],
+) -> dict[str, Any]:
+    """Preprocess the storage options."""
+    if protocol == "sftp" and (pkey := options.get("pkey")):
+        options["pkey"] = _guess_key_class(pkey, passphrase=options.get("passphrase"))
+
+    return options
 
 
 PROTOCOL_MAPPING: dict[str, str] = {
@@ -64,7 +100,7 @@ class FSSpecStateStoreManager(StateStoreManager):
                 continue
             opts[setting_name] = value
 
-        self.storage_options = opts
+        self.storage_options = _preprocess_storage_options(protocol, opts)
 
     @property
     def path(self) -> UPath | LocalPath:
