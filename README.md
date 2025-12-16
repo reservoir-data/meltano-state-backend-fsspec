@@ -43,10 +43,10 @@ The S3, GCS, Azure, and SFTP storage options have first-class settings support:
 
 ### Arbitrary storage options
 
-If you need to use a filesystem that FSSpec does not support out of the box, you can use the `state_backend.fs.storage_options` setting to configure the storage options:
+If you need to use a filesystem that this package does not support "officially" but for which a fsspec plugin exists, you can use the `state_backend.fs.storage_options` setting to configure the storage options:
 
 ```shell
-meltano config meltano set state_backend.fs.storage_options '{"sftp.foo": "bar", "sftp.baz": "qux"}'
+meltano config meltano set state_backend.fs.storage_options '{"myfs.foo": "bar", "myfs.baz": "qux"}'
 ```
 
 ### Examples
