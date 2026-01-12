@@ -84,8 +84,7 @@ meltano = { git = "https://github.com/meltano/meltano.git" }
 [tool.ruff]
 line-length = 88
 
-[tool.ruff.lint]
-extend-select = [
+lint.extend-select = [
   "TC",
   "UP",
 ]
