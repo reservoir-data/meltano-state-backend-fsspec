@@ -1,14 +1,14 @@
 import shutil
 from pathlib import Path
 
+import pytest
+from meltano.core.project import Project
+from meltano.core.state_store import state_store_manager_from_project_settings
 from upath.implementations.cloud import AzurePath, GCSPath, S3Path
 from upath.implementations.local import LocalPath
 from upath.implementations.sftp import SFTPPath
-from meltano.core.project import Project
-from meltano.core.state_store import state_store_manager_from_project_settings
-from meltano_state_backend_fsspec import FSSpecStateStoreManager
 
-import pytest
+from meltano_state_backend_fsspec import FSSpecStateStoreManager
 
 
 def test_manager() -> None:

@@ -3,8 +3,8 @@ import uuid
 from collections.abc import Generator
 
 import pytest
-from testcontainers.minio import MinioContainer
 from meltano.core.state_store import MeltanoState
+from testcontainers.minio import MinioContainer
 
 from meltano_state_backend_fsspec import FSSpecStateStoreManager
 

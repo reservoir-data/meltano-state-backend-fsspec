@@ -13,9 +13,10 @@ from meltano.core.state_store import MeltanoState, StateStoreManager
 from upath import UPath
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable, Generator
-    from upath.implementations.local import LocalPath
+    from collections.abc import Generator, Iterable
+
     from paramiko.pkey import PKey
+    from upath.implementations.local import LocalPath
 
 if sys.version_info >= (3, 12):
     from typing import override
@@ -30,9 +31,9 @@ def utc_now() -> float:
 
 
 def _guess_key_class(pkey: str, *, passphrase: str | None = None) -> PKey:
+    from paramiko.ecdsakey import ECDSAKey
     from paramiko.ed25519key import Ed25519Key
     from paramiko.rsakey import RSAKey
-    from paramiko.ecdsakey import ECDSAKey
     from paramiko.ssh_exception import SSHException
 
     # Try loading the key using paramiko's key classes

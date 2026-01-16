@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import unittest.mock
 import uuid
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import pytest
-from testcontainers.sftp import SFTPContainer
 from meltano.core.state_store import MeltanoState
+from testcontainers.sftp import SFTPContainer
 
 from meltano_state_backend_fsspec import FSSpecStateStoreManager
 
@@ -38,10 +38,10 @@ def manager(
             storage_options["sftp.password"] = sftp.users[0].password
         case "keypair":
             storage_options["sftp.username"] = sftp.users[1].name
-            storage_options["sftp.pkey"] = sftp.users[1].private_key.decode("utf-8")  # type: ignore[union-attr] # ty: ignore[possibly-missing-attribute]
+            storage_options["sftp.pkey"] = sftp.users[1].private_key.decode("utf-8")  # type: ignore[union-attr]
         case "keyfile":
             filepath = tmp_path / f"keyfile-{uuid.uuid4()}.pem"
-            filepath.write_text(sftp.users[1].private_key.decode("utf-8"))  # type: ignore[union-attr] # ty: ignore[possibly-missing-attribute]
+            filepath.write_text(sftp.users[1].private_key.decode("utf-8"))  # type: ignore[union-attr]
             storage_options["sftp.username"] = sftp.users[1].name
             storage_options["sftp.key_filename"] = filepath.as_posix()
         case _:  # pragma: no cover

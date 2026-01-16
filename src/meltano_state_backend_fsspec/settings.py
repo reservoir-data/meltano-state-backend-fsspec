@@ -1,6 +1,5 @@
 from meltano.core.setting_definition import SettingDefinition, SettingKind
 
-
 PROTOCOL = SettingDefinition(
     name="state_backend.fs.protocol",
     description="The protocol of the filesystem to use.",
