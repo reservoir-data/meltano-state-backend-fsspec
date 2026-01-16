@@ -65,7 +65,6 @@ dev = [
   { include-group = "typing" },
 ]
 testing = [
-  "azure-storage-blob~=12.27.1",  # Pin this to a minor version to remain compatible with Azurite
   "coverage>=7.10.7",
   "pytest>=8.4.2",
   "testcontainers[azurite,minio,sftp]>=4.13.3",

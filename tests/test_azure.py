@@ -11,7 +11,9 @@ from meltano_state_backend_fsspec import FSSpecStateStoreManager
 
 @pytest.fixture(scope="module")
 def azurite() -> Generator[AzuriteContainer, None, None]:
-    with AzuriteContainer() as azurite:
+    with AzuriteContainer(
+        command="azurite-blob --skipApiVersionCheck --blobHost 0.0.0.0",
+    ) as azurite:
         yield azurite
 
 
