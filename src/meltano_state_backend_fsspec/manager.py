@@ -208,7 +208,7 @@ class FSSpecStateStoreManager(StateStoreManager):
         if not self.path.exists():
             return []
         paths = self.path.glob(pattern) if pattern else self.path.iterdir()
-        return [path.name for path in paths if path.joinpath("state.json").exists()]
+        return sorted(path.name for path in paths if path.joinpath("state.json").exists())
 
     @override
     def clear_all(self) -> int:
