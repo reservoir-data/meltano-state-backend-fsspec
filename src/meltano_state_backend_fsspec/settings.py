@@ -1,3 +1,5 @@
+"""Add-on settings."""
+
 from meltano.core.setting_definition import SettingDefinition, SettingKind
 
 PROTOCOL = SettingDefinition(
@@ -89,7 +91,10 @@ SFTP_PASSWORD = SettingDefinition(
 )
 SFTP_PRIVATE_KEY = SettingDefinition(
     name="state_backend.fs.storage_options.sftp.pkey",
-    description="The content of the private key for SFTP authentication. Must be in PEM format. Supported key types are RSA, ECDSA, and Ed25519.",
+    description=(
+        "The content of the private key for SFTP authentication."
+        "Must be in PEM format. Supported key types are RSA, ECDSA, and Ed25519."
+    ),
     kind=SettingKind.STRING,
     sensitive=True,
 )
