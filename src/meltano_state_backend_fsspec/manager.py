@@ -1,3 +1,5 @@
+"""State store manager implementation using fsspec for filesystem interactions."""
+
 from __future__ import annotations
 
 import contextlib
@@ -26,15 +28,15 @@ else:
 logger = logging.getLogger(__name__)
 
 
-def utc_now() -> float:
+def _utc_now() -> float:
     return datetime.now(timezone.utc).timestamp()
 
 
 def _guess_key_class(pkey: str, *, passphrase: str | None = None) -> PKey:
-    from paramiko.ecdsakey import ECDSAKey
-    from paramiko.ed25519key import Ed25519Key
-    from paramiko.rsakey import RSAKey
-    from paramiko.ssh_exception import SSHException
+    from paramiko.ecdsakey import ECDSAKey  # noqa: PLC0415
+    from paramiko.ed25519key import Ed25519Key  # noqa: PLC0415
+    from paramiko.rsakey import RSAKey  # noqa: PLC0415
+    from paramiko.ssh_exception import SSHException  # noqa: PLC0415
 
     # Try loading the key using paramiko's key classes
     # The order matters - try most common types first
@@ -44,9 +46,11 @@ def _guess_key_class(pkey: str, *, passphrase: str | None = None) -> PKey:
                 io.StringIO(pkey),
                 password=passphrase,
             )
-        except SSHException:
+        except SSHException:  # noqa: PERF203
             continue
-    raise ValueError("SFTP private key is not in a valid format")
+
+    msg = "SFTP private key is not in a valid format"
+    raise ValueError(msg)
 
 
 def _preprocess_storage_options(
@@ -66,6 +70,8 @@ PROTOCOL_MAPPING: dict[str, str] = {
 
 
 class FSSpecStateStoreManager(StateStoreManager):
+    """State store manager implementation using fsspec for filesystem interactions."""
+
     def __init__(
         self,
         uri: str,
@@ -84,6 +90,7 @@ class FSSpecStateStoreManager(StateStoreManager):
             lock_retry_seconds: The retry interval for the lock in seconds.
             storage_options: The storage options to use.
             **kwargs: Additional keyword arguments.
+
         """
         super().__init__(**kwargs)
         self._path: UPath | LocalPath | None = None
@@ -105,6 +112,7 @@ class FSSpecStateStoreManager(StateStoreManager):
 
     @property
     def path(self) -> UPath | LocalPath:
+        """Base path for state storage."""
         if self._path is None:
             self._path = UPath.from_uri(self._fsuri, **self.storage_options)
         return self._path
@@ -122,6 +130,7 @@ class FSSpecStateStoreManager(StateStoreManager):
 
         Returns:
             The path to the lock file for the given state_id.
+
         """
         return self.path.joinpath(state_id, "lock")
 
@@ -133,6 +142,7 @@ class FSSpecStateStoreManager(StateStoreManager):
 
         Returns:
             the path to the file/blob storing complete state for the given state_id.
+
         """
         return self.path.joinpath(state_id, "state.json")
 
@@ -147,11 +157,12 @@ class FSSpecStateStoreManager(StateStoreManager):
 
         Raises:
             Exception: if error not indicating file is not found is thrown
+
         """
         lock_path = self._get_lock_file(state_id)
         try:
             with lock_path.open() as reader:
-                if utc_now() > (float(reader.read()) + self.lock_timeout_seconds):
+                if _utc_now() > (float(reader.read()) + self.lock_timeout_seconds):
                     with contextlib.suppress(FileNotFoundError, OSError):
                         # Use fs.rm_file() to avoid Content-MD5 issues with MinIO
                         lock_path.fs.rm_file(lock_path.path)  # type: ignore[no-untyped-call]
@@ -193,7 +204,8 @@ class FSSpecStateStoreManager(StateStoreManager):
         if not state_dir.exists():
             return
 
-        # Delete files individually to avoid Content-MD5 issues with MinIO's DeleteObjects
+        # Delete files individually to avoid Content-MD5 issues with
+        # MinIO's DeleteObjects
         for file_path in state_dir.iterdir():
             with contextlib.suppress(FileNotFoundError, OSError):
                 file_path.fs.rm_file(file_path.path)  # type: ignore[no-untyped-call]
@@ -208,7 +220,9 @@ class FSSpecStateStoreManager(StateStoreManager):
         if not self.path.exists():
             return []
         paths = self.path.glob(pattern) if pattern else self.path.iterdir()
-        return sorted(path.name for path in paths if path.joinpath("state.json").exists())
+        return sorted(
+            path.name for path in paths if path.joinpath("state.json").exists()
+        )
 
     @override
     def clear_all(self) -> int:
@@ -235,12 +249,8 @@ class FSSpecStateStoreManager(StateStoreManager):
             while self.is_locked(state_id):
                 sleep(retry_seconds)
             with lock_path.open("w") as writer:
-                writer.write(str(utc_now()))
+                writer.write(str(_utc_now()))
             yield
         finally:
-            try:
-                # Use fs.rm_file() to avoid Content-MD5 issues with MinIO
+            with contextlib.suppress(FileNotFoundError, OSError):
                 lock_path.fs.rm_file(lock_path.path)  # type: ignore[no-untyped-call]
-            except (FileNotFoundError, OSError):
-                # Lock file already deleted or permission error
-                pass

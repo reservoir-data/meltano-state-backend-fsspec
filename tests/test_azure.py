@@ -144,7 +144,8 @@ def test_acquire_lock(manager: FSSpecStateStoreManager) -> None:
 
     with (
         unittest.mock.patch(
-            "meltano_state_backend_fsspec.manager.utc_now", side_effect=mock_utc_now
+            "meltano_state_backend_fsspec.manager._utc_now",
+            side_effect=mock_utc_now,
         ),
         manager.acquire_lock(state_id, retry_seconds=5),
     ):
@@ -153,7 +154,8 @@ def test_acquire_lock(manager: FSSpecStateStoreManager) -> None:
         # Shift time forward by 80 seconds (beyond 60 second timeout)
         mock_time_after = 1080.0
         with unittest.mock.patch(
-            "meltano_state_backend_fsspec.manager.utc_now", return_value=mock_time_after
+            "meltano_state_backend_fsspec.manager._utc_now",
+            return_value=mock_time_after,
         ):
             assert not manager.is_locked(state_id)
 
@@ -179,9 +181,9 @@ def test_acquire_lock_retry(manager: FSSpecStateStoreManager) -> None:
     with (
         unittest.mock.patch.object(manager, "is_locked", side_effect=mock_is_locked),
         unittest.mock.patch("meltano_state_backend_fsspec.manager.sleep") as mock_sleep,
+        manager.acquire_lock(state_id, retry_seconds=retry_seconds),
     ):
-        with manager.acquire_lock(state_id, retry_seconds=retry_seconds):
-            pass
+        pass
 
     # Verify sleep was called 5 times (once for each time is_locked returned True)
     assert mock_sleep.call_count == 5

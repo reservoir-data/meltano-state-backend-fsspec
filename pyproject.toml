@@ -7,9 +7,7 @@ name = "meltano-state-backend-fsspec"
 version = "0.1.0"
 description = "A state backend for Meltano that uses fsspec to support arbitrary filesystems."
 readme = "README.md"
-authors = [
-  { name = "Edgar Ramírez Mondragón", email = "edgarrm358@gmail.com" },
-]
+license = "MIT"
 requires-python = ">=3.10"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
@@ -18,7 +16,6 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
-  "Programming Language :: Python :: 3.15",
 ]
 dependencies = [
   "fsspec>=2025.9",
@@ -26,38 +23,42 @@ dependencies = [
   "typing-extensions>=4.15; python_full_version<'3.12'",
   "universal-pathlib>=0.3",
 ]
-optional-dependencies.azure = [
+[[project.authors]]
+name = "Edgar Ramírez Mondragón"
+email = "edgarrm358@gmail.com"
+[project.entry-points]
+"meltano.settings".azure_account_key = "meltano_state_backend_fsspec:AZURE_ACCOUNT_KEY"
+"meltano.settings".azure_account_name = "meltano_state_backend_fsspec:AZURE_ACCOUNT_NAME"
+"meltano.settings".azure_connection_string = "meltano_state_backend_fsspec:AZURE_CONNECTION_STRING"
+"meltano.settings".gcs_endpoint_url = "meltano_state_backend_fsspec:GCS_ENDPOINT_URL"
+"meltano.settings".gcs_project = "meltano_state_backend_fsspec:GCS_PROJECT"
+"meltano.settings".gcs_token = "meltano_state_backend_fsspec:GCS_TOKEN"
+"meltano.settings".protocol = "meltano_state_backend_fsspec:PROTOCOL"
+"meltano.settings".s3_endpoint_url = "meltano_state_backend_fsspec:S3_ENDPOINT_URL"
+"meltano.settings".s3_key = "meltano_state_backend_fsspec:S3_KEY"
+"meltano.settings".s3_secret = "meltano_state_backend_fsspec:S3_SECRET"
+"meltano.settings".sftp_host = "meltano_state_backend_fsspec:SFTP_HOST"
+"meltano.settings".sftp_key_filename = "meltano_state_backend_fsspec:SFTP_PRIVATE_KEY_FILE"
+"meltano.settings".sftp_passphrase = "meltano_state_backend_fsspec:SFTP_PRIVATE_KEY_PASS"
+"meltano.settings".sftp_password = "meltano_state_backend_fsspec:SFTP_PASSWORD"
+"meltano.settings".sftp_port = "meltano_state_backend_fsspec:SFTP_PORT"
+"meltano.settings".sftp_private_key = "meltano_state_backend_fsspec:SFTP_PRIVATE_KEY"
+"meltano.settings".sftp_username = "meltano_state_backend_fsspec:SFTP_USERNAME"
+"meltano.settings".storage_options = "meltano_state_backend_fsspec:STORAGE_OPTIONS"
+"meltano.state_backends".fs = "meltano_state_backend_fsspec:FSSpecStateStoreManager"
+[project.optional-dependencies]
+azure = [
   "fsspec[abfs]",
 ]
-optional-dependencies.gcs = [
+gcs = [
   "fsspec[gcs]",
 ]
-optional-dependencies.s3 = [
+s3 = [
   "fsspec[s3]",
 ]
-optional-dependencies.sftp = [
+sftp = [
   "fsspec[sftp]",
 ]
-
-entry-points."meltano.settings".azure_account_key = "meltano_state_backend_fsspec:AZURE_ACCOUNT_KEY"
-entry-points."meltano.settings".azure_account_name = "meltano_state_backend_fsspec:AZURE_ACCOUNT_NAME"
-entry-points."meltano.settings".azure_connection_string = "meltano_state_backend_fsspec:AZURE_CONNECTION_STRING"
-entry-points."meltano.settings".gcs_endpoint_url = "meltano_state_backend_fsspec:GCS_ENDPOINT_URL"
-entry-points."meltano.settings".gcs_project = "meltano_state_backend_fsspec:GCS_PROJECT"
-entry-points."meltano.settings".gcs_token = "meltano_state_backend_fsspec:GCS_TOKEN"
-entry-points."meltano.settings".protocol = "meltano_state_backend_fsspec:PROTOCOL"
-entry-points."meltano.settings".s3_endpoint_url = "meltano_state_backend_fsspec:S3_ENDPOINT_URL"
-entry-points."meltano.settings".s3_key = "meltano_state_backend_fsspec:S3_KEY"
-entry-points."meltano.settings".s3_secret = "meltano_state_backend_fsspec:S3_SECRET"
-entry-points."meltano.settings".sftp_host = "meltano_state_backend_fsspec:SFTP_HOST"
-entry-points."meltano.settings".sftp_key_filename = "meltano_state_backend_fsspec:SFTP_PRIVATE_KEY_FILE"
-entry-points."meltano.settings".sftp_passphrase = "meltano_state_backend_fsspec:SFTP_PRIVATE_KEY_PASS"
-entry-points."meltano.settings".sftp_password = "meltano_state_backend_fsspec:SFTP_PASSWORD"
-entry-points."meltano.settings".sftp_port = "meltano_state_backend_fsspec:SFTP_PORT"
-entry-points."meltano.settings".sftp_private_key = "meltano_state_backend_fsspec:SFTP_PRIVATE_KEY"
-entry-points."meltano.settings".sftp_username = "meltano_state_backend_fsspec:SFTP_USERNAME"
-entry-points."meltano.settings".storage_options = "meltano_state_backend_fsspec:STORAGE_OPTIONS"
-entry-points."meltano.state_backends".fs = "meltano_state_backend_fsspec:FSSpecStateStoreManager"
 
 [dependency-groups]
 dev = [
@@ -66,6 +67,7 @@ dev = [
 ]
 testing = [
   "coverage>=7.10.7",
+  "meltano-state-backend-fsspec[azure,gcs,s3,sftp]",
   "pytest>=9",
   "testcontainers[azurite,minio,sftp]>=4.13.3",
   "time-machine>=2.19",
@@ -78,84 +80,136 @@ typing = [
 
 [tool.uv]
 required-version = ">=0.9.17"
-
 [tool.uv.sources]
 meltano = { git = "https://github.com/meltano/meltano.git" }
 
 [tool.ruff]
 line-length = 88
-
-lint.extend-select = [
-  "B",  # flake8-bugbear
-  "I",  # isort
-  "TC", # flake8-type-checking
-  "UP", # pyupgrade
+[tool.ruff.lint]
+extend-select = [
+  "A",    # flake8-builtins
+  "ANN",  # flake8-annotations
+  "ARG",  # flake8-unused-arguments
+  "B",    # flake8-bugbear
+  "BLE",  # flake8-blind-except
+  "C4",   # flake8-comprehensions
+  "C90",  # mccabe
+  "COM",  # flake8-commas
+  "D",    # pydocstyle
+  "DOC",  # pydoclint
+  "DTZ",  # flake8-datetimez
+  "E",    # pycodestyle (error)
+  "EM",   # flake8-errmsg
+  "ERA",  # flake8-eradicate
+  "F",    # pyflakes
+  "FA",   # flake8-future-annotations
+  "FIX",  # flake8-fixme
+  "FLY",  # flynt
+  "FURB", # refurb
+  "G",    # flake8-logging-format
+  "I",    # isort
+  "INP",  # flake8-no-pep420
+  "ISC",  # flake8-implicit-str-concat
+  "LOG",  # flake8-logging
+  "N",    # pep8-naming
+  "PERF", # Perflint
+  "PGH",  # pygrep-hooks
+  "PIE",  # flake8-pie
+  "PLC",  # Pylint (Convention)
+  "PLE",  # Pylint (Error)
+  "PLR",  # Pylint (Refactor)
+  "PLW",  # Pylint (Warning)
+  "PT",   # flake8-pytest-style
+  "PTH",  # flake8-use-pathlib
+  "RET",  # flake8-return
+  "RSE",  # flake8-raise
+  "RUF",  # Ruff-specific rules
+  "S",    # flake8-bandit
+  "SIM",  # flake8-simplify
+  "SLF",  # flake8-self
+  "T10",  # flake8-debugger
+  "T20",  # flake8-print
+  "TC",   # flake8-type-checking
+  "TD",   # flake8-todos
+  "TID",  # flake8-tidy-imports
+  "TRY",  # tryceratops
+  "UP",   # pyupgrade
+  "W",    # pycodestyle (warning)
+  "YTT",  # flake8-2020
 ]
+per-file-ignores."tests/**" = [
+  "D",       # Don't lint docstrings in tests
+  "INP001",  # Allow namespace packages in tests
+  "PLR2004", # Magig numbers in tests are fine
+  "S101",    # Allow 'assert' in tests
+]
+flake8-annotations.allow-star-arg-any = true
+flake8-annotations.mypy-init-return = true
+flake8-annotations.suppress-dummy-args = true
+flake8-pytest-style.parametrize-values-type = "tuple"
+pydocstyle.convention = "google"
 
 [tool.pyproject-fmt]
-max_supported_python = "3.15"
+table_format = "long"
+
+[tool.mypy]
+enable_error_code = [ "ignore-without-code", "redundant-expr", "truthy-bool" ]
+follow_untyped_imports = true
+strict = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
 
 [tool.pytest]
-addopts = [ "-ra", "--strict-config", "--strict-markers" ]
+addopts = [
+  "--durations=10",
+  "-v",
+  "-ra",
+]
 filterwarnings = [
   "error",
   "once:The @wait_container_is_ready decorator is deprecated and will be removed in a future version:DeprecationWarning",
-  "once:The wait_for_logs function with string or callable predicates is deprecated and will be removed in a future version:DeprecationWarning",
+  """\
+  once:The wait_for_logs function with string or callable predicates is deprecated and will be removed in a future \
+  version:DeprecationWarning\
+  """,
 ]
 log_level = "INFO"
 minversion = "9"
+strict = true
 testpaths = [ "tests" ]
-xfail_strict = true
 
 [tool.coverage.paths]
 package = [
   "src/meltano_state_backend_fsspec/",
   "*/site-packages/meltano_state_backend_fsspec/",
 ]
-
+[tool.coverage.report]
+exclude_also = [
+  "if (t\\.)?TYPE_CHECKING:",
+]
 [tool.coverage.run]
 branch = true
+parallel = true
+relative_files = true
 source = [
   "meltano_state_backend_fsspec",
   "tests",
 ]
-parallel = true
-relative_files = true
-
-[tool.coverage.report]
-exclude_also = [
-  '''if (t\.)?TYPE_CHECKING:''',
-]
 
 [tool.tox]
-min_version = "4.22"
-requires = [ "tox", "tox-uv" ]
+requires = [ "tox>=4.51", "tox-uv" ]
 env_list = [
   "typing",
-  "3.15",
-  "3.14",
-  "3.13",
-  "3.12",
-  "3.11",
-  "3.10",
+  { product = [
+    { prefix = "3.", start = 10 },
+  ] },
   "coverage",
 ]
-
-[tool.tox.env_run_base]
-runner = "uv-venv-lock-runner"
-dependency_groups = [ "testing" ]
-set_env = { "PYO3_USE_ABI3_FORWARD_COMPATIBILITY" = "1" }
-extras = [ "azure", "s3", "sftp" ]
-commands = [ [ "coverage", "run", "-m", "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]
-
 [tool.tox.env.coverage]
+description = "combine and report coverage results"
 depends = [
-  "3.10",
-  "3.11",
-  "3.12",
-  "3.13",
-  "3.14",
-  "3.15",
+  "3.*",
 ]
 dependency_groups = [ "testing" ]
 commands = [
@@ -165,6 +219,7 @@ commands = [
 ]
 
 [tool.tox.env.typing]
+description = "type checks"
 dependency_groups = [ "testing", "typing" ]
 commands = [
   [
@@ -183,11 +238,13 @@ commands = [
     ], extend = true },
   ],
 ]
-
-[tool.mypy]
-enable_error_code = [ "ignore-without-code", "redundant-expr", "truthy-bool" ]
-follow_untyped_imports = true
-strict = true
-warn_unreachable = true
-warn_unused_configs = true
-warn_unused_ignores = true
+[tool.tox.env_run_base]
+description = "run tests on Python {py_dot_ver}"
+base_python_file = [ ".python-version" ]
+pass_env = [
+  "GITHUB_*",
+]
+runner = "uv-venv-lock-runner"
+dependency_groups = [ "testing" ]
+extras = [ "azure", "s3", "sftp" ]
+commands = [ [ "coverage", "run", "-m", "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]

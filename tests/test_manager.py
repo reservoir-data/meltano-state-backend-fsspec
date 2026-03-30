@@ -84,7 +84,8 @@ def test_load_s3_settings(project: Project, monkeypatch: pytest.MonkeyPatch) -> 
 def test_load_gcs_settings(project: Project, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("MELTANO_STATE_BACKEND_FS_PROTOCOL", "gcs")
     monkeypatch.setenv(
-        "MELTANO_STATE_BACKEND_FS_STORAGE_OPTIONS_GCS_PROJECT", "my-project"
+        "MELTANO_STATE_BACKEND_FS_STORAGE_OPTIONS_GCS_PROJECT",
+        "my-project",
     )
     monkeypatch.setenv("MELTANO_STATE_BACKEND_FS_STORAGE_OPTIONS_GCS_TOKEN", "my-token")
     monkeypatch.setenv(
@@ -132,7 +133,8 @@ def test_load_azure_settings(project: Project, monkeypatch: pytest.MonkeyPatch) 
 
 
 def test_load_arbitrary_settings(
-    project: Project, monkeypatch: pytest.MonkeyPatch
+    project: Project,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("MELTANO_STATE_BACKEND_FS_PROTOCOL", "sftp")
     monkeypatch.setenv(

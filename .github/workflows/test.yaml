@@ -34,53 +34,53 @@ env:
   # renovate: datasource=pypi depName=uv
   UV_VERSION: 0.10.7
   # renovate: datasource=pypi depName=tox
-  TOX_VERSION: 4.46.3
+  TOX_VERSION: 4.51.0
   # renovate: datasource=pypi depName=tox-uv
   TOX_UV_VERSION: 1.33.0
 
 jobs:
+  build-package:
+    name: Build & verify package
+    runs-on: ubuntu-latest
+    outputs:
+      supported-python-versions: ${{ steps.baipp.outputs.supported_python_classifiers_json_array }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: hynek/build-and-inspect-python-package@efb823f52190ad02594531168b7a2d5790e66516 # v2.14.0
+        id: baipp
+
   typing:
     name: Typing
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
-        id: setup-python
       - uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
           version: ${{ env.UV_VERSION }}
-      - env:
-          UV_PYTHON: ${{ steps.setup-python.outputs.python-version }}
-        run: >
+      - run: >
           uvx
+          --managed-python
           --with tox-uv==${{ env.TOX_UV_VERSION }}
           --with tox==${{ env.TOX_VERSION }}
           tox -e typing
 
   test:
-    name: Python ${{ matrix.python-version }}
+    name: Test
     runs-on: ubuntu-24.04
-    continue-on-error: ${{ matrix.python-version == '3.13' }}
+    needs: build-package
     strategy:
       fail-fast: false
       matrix:
-        python-version:
-          - "3.10"
-          - "3.11"
-          - "3.12"
-          - "3.13"
-          - "3.14"
-          - "3.15"
+        python-version: ${{ fromJson(needs.build-package.outputs.supported-python-versions) }}
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
-        id: setup-python
-        with:
-          python-version: ${{ matrix.python-version }}
-          allow-prereleases: true
       - uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
+          python-version: ${{ matrix.python-version }}
           version: ${{ env.UV_VERSION }}
       - run: >
           uvx
@@ -99,7 +99,6 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           pattern: coverage-data-*
@@ -110,6 +109,7 @@ jobs:
       - name: Combine coverage data and generate report
         run: >
           uvx
+          --managed-python
           --with tox-uv==${{ env.TOX_UV_VERSION }}
           --with tox==${{ env.TOX_VERSION }}
           tox -e coverage
