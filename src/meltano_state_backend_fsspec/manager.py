@@ -239,7 +239,7 @@ class FSSpecStateStoreManager(StateStoreManager):
         self,
         state_id: str,
         *,
-        retry_seconds: int,
+        retry_seconds: float,
     ) -> Generator[None, None, None]:
         """Acquire the lock for the given state_id."""
         lock_path = self._get_lock_file(state_id)
