@@ -69,7 +69,7 @@ testing = [
   "coverage>=7.10.7",
   "meltano-state-backend-fsspec[azure,gcs,s3,sftp]",
   "pytest>=9",
-  "testcontainers[azurite,minio,sftp]>=4.13.3",
+  "testcontainers[azurite,minio,sftp]>=4.15",
   "time-machine>=2.19",
 ]
 typing = [
@@ -82,6 +82,7 @@ typing = [
 required-version = ">=0.9.17"
 [tool.uv.sources]
 meltano = { git = "https://github.com/meltano/meltano.git" }
+testcontainers = { git = "https://github.com/testcontainers/testcontainers-python.git", rev = "main" }
 
 [tool.ruff]
 line-length = 88
@@ -168,11 +169,6 @@ addopts = [
 ]
 filterwarnings = [
   "error",
-  "once:The @wait_container_is_ready decorator is deprecated and will be removed in a future version:DeprecationWarning",
-  """\
-  once:The wait_for_logs function with string or callable predicates is deprecated and will be removed in a future \
-  version:DeprecationWarning\
-  """,
 ]
 log_level = "INFO"
 minversion = "9"
