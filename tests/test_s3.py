@@ -111,6 +111,7 @@ def test_get_state_ids_with_pattern(manager: FSSpecStateStoreManager) -> None:
     manager.set(state11)
     manager.set(state12)
     manager.set(state21)
+    assert manager.get_state_ids() == ["test_job11", "test_job12", "test_job21"]
     assert manager.get_state_ids(pattern="test_job1*") == ["test_job11", "test_job12"]
     assert manager.get_state_ids(pattern="test_job2*") == ["test_job21"]
 

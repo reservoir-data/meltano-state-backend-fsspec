@@ -117,8 +117,8 @@ class FSSpecStateStoreManager(StateStoreManager):
             self._path = UPath.from_uri(self._fsuri, **self.storage_options)
         return self._path
 
-    @override
     @property
+    @override
     def label(self) -> str:
         return self.path.protocol
 
