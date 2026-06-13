@@ -4,7 +4,7 @@ from collections.abc import Generator
 
 import pytest
 from meltano.core.state_store import MeltanoState
-from testcontainers.azurite import AzuriteContainer
+from testcontainers.community.azurite import AzuriteContainer
 
 from meltano_state_backend_fsspec import FSSpecStateStoreManager
 

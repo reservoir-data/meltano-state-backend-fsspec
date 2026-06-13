@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 
 import pytest
 from meltano.core.state_store import MeltanoState
-from testcontainers.sftp import SFTPContainer
+from testcontainers.community.sftp import SFTPContainer
 
 from meltano_state_backend_fsspec import FSSpecStateStoreManager
 

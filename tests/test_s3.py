@@ -4,7 +4,7 @@ from collections.abc import Generator
 
 import pytest
 from meltano.core.state_store import MeltanoState
-from testcontainers.minio import MinioContainer
+from testcontainers.community.minio import MinioContainer
 
 from meltano_state_backend_fsspec import FSSpecStateStoreManager
 
