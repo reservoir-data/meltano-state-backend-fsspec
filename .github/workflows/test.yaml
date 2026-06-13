@@ -57,14 +57,16 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
       - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
         with:
           version: ${{ env.UV_VERSION }}
       - run: >
           uvx
           --managed-python
-          --with tox-uv==${{ env.TOX_UV_VERSION }}
-          --with tox==${{ env.TOX_VERSION }}
+          --with tox-uv==${TOX_UV_VERSION}
+          --with tox==${TOX_VERSION}
           tox -e typing
 
   test:
@@ -78,15 +80,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
       - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
         with:
           python-version: ${{ matrix.python-version }}
           version: ${{ env.UV_VERSION }}
       - run: >
           uvx
-          --with tox-uv==${{ env.TOX_UV_VERSION }}
-          --with tox==${{ env.TOX_VERSION }}
-          tox -e ${{ matrix.python-version }}
+          --with tox-uv==${TOX_UV_VERSION}
+          --with tox==${TOX_VERSION}
+          tox -e ${MATRIX_PYTHON_VERSION}
+        env:
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           include-hidden-files: true
@@ -99,6 +105,8 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           pattern: coverage-data-*
@@ -110,6 +118,6 @@ jobs:
         run: >
           uvx
           --managed-python
-          --with tox-uv==${{ env.TOX_UV_VERSION }}
-          --with tox==${{ env.TOX_VERSION }}
+          --with tox-uv==${TOX_UV_VERSION}
+          --with tox==${TOX_VERSION}
           tox -e coverage
