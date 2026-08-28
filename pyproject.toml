@@ -16,6 +16,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
 ]
 dependencies = [
   "fsspec>=2025.9",
@@ -26,6 +27,19 @@ dependencies = [
 [[project.authors]]
 name = "Edgar Ramírez Mondragón"
 email = "edgarrm358@gmail.com"
+[project.optional-dependencies]
+azure = [
+  "fsspec[abfs]",
+]
+gcs = [
+  "fsspec[gcs]",
+]
+s3 = [
+  "fsspec[s3]",
+]
+sftp = [
+  "fsspec[sftp]",
+]
 [project.entry-points]
 "meltano.settings".azure_account_key = "meltano_state_backend_fsspec:AZURE_ACCOUNT_KEY"
 "meltano.settings".azure_account_name = "meltano_state_backend_fsspec:AZURE_ACCOUNT_NAME"
@@ -46,19 +60,6 @@ email = "edgarrm358@gmail.com"
 "meltano.settings".sftp_username = "meltano_state_backend_fsspec:SFTP_USERNAME"
 "meltano.settings".storage_options = "meltano_state_backend_fsspec:STORAGE_OPTIONS"
 "meltano.state_backends".fs = "meltano_state_backend_fsspec:FSSpecStateStoreManager"
-[project.optional-dependencies]
-azure = [
-  "fsspec[abfs]",
-]
-gcs = [
-  "fsspec[gcs]",
-]
-s3 = [
-  "fsspec[s3]",
-]
-sftp = [
-  "fsspec[sftp]",
-]
 
 [dependency-groups]
 dev = [
@@ -150,6 +151,7 @@ flake8-pytest-style.parametrize-values-type = "tuple"
 pydocstyle.convention = "google"
 
 [tool.pyproject-fmt]
+max_supported_python = "3.15"
 table_format = "long"
 
 [tool.mypy]
@@ -177,6 +179,14 @@ minversion = "9"
 strict = true
 testpaths = [ "tests" ]
 
+[tool.coverage.run]
+branch = true
+parallel = true
+relative_files = true
+source = [
+  "meltano_state_backend_fsspec",
+  "tests",
+]
 [tool.coverage.paths]
 package = [
   "src/meltano_state_backend_fsspec/",
@@ -185,14 +195,6 @@ package = [
 [tool.coverage.report]
 exclude_also = [
   "if (t\\.)?TYPE_CHECKING:",
-]
-[tool.coverage.run]
-branch = true
-parallel = true
-relative_files = true
-source = [
-  "meltano_state_backend_fsspec",
-  "tests",
 ]
 
 [tool.tox]
@@ -213,7 +215,6 @@ commands = [
 depends = [
   "3.*",
 ]
-
 [tool.tox.env.typing]
 description = "type checks"
 dependency_groups = [ "testing", "typing" ]
