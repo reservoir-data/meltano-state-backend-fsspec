@@ -11,7 +11,7 @@ from meltano_state_backend_fsspec import FSSpecStateStoreManager
 
 @pytest.fixture(scope="module")
 def minio() -> Generator[MinioContainer, None, None]:
-    with MinioContainer() as minio:
+    with MinioContainer(image="ghcr.io/coollabsio/minio") as minio:
         client = minio.get_client()
         client.make_bucket("state")
         yield minio
