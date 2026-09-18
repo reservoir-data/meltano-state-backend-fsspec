@@ -151,7 +151,7 @@ flake8-pytest-style.parametrize-values-type = "tuple"
 pydocstyle.convention = "google"
 
 [tool.pyproject-fmt]
-max_supported_python = "3.15"
+keep_full_version = true
 table_format = "long"
 
 [tool.mypy]
@@ -180,13 +180,13 @@ strict = true
 testpaths = [ "tests" ]
 
 [tool.coverage.run]
-branch = true
-parallel = true
-relative_files = true
 source = [
   "meltano_state_backend_fsspec",
   "tests",
 ]
+branch = true
+parallel = true
+relative_files = true
 [tool.coverage.paths]
 package = [
   "src/meltano_state_backend_fsspec/",
