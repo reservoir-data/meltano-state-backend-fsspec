@@ -7,7 +7,7 @@ import io
 import logging
 import sys
 from contextlib import contextmanager
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from time import sleep
 from typing import TYPE_CHECKING, Any
 
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 def _utc_now() -> float:
-    return datetime.now(timezone.utc).timestamp()
+    return datetime.now(UTC).timestamp()
 
 
 def _guess_key_class(pkey: str, *, passphrase: str | None = None) -> PKey:
@@ -46,7 +46,7 @@ def _guess_key_class(pkey: str, *, passphrase: str | None = None) -> PKey:
                 io.StringIO(pkey),
                 password=passphrase,
             )
-        except SSHException:  # noqa: PERF203
+        except SSHException:
             continue
 
     msg = "SFTP private key is not in a valid format"

@@ -8,15 +8,15 @@ version = "0.1.0"
 description = "A state backend for Meltano that uses fsspec to support arbitrary filesystems."
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: 3.15",
+  "Programming Language :: Python :: 3.16",
 ]
 dependencies = [
   "fsspec>=2025.9",
@@ -152,6 +152,7 @@ pydocstyle.convention = "google"
 
 [tool.pyproject-fmt]
 keep_full_version = true
+max_supported_python = "3.16"
 table_format = "long"
 
 [tool.mypy]
@@ -200,7 +201,7 @@ exclude_also = [
 [tool.tox]
 requires = [ "tox>=4.55", "tox-uv>=1.35" ]
 env_list = [
-  { prefix = "3.", start = 10 },
+  { prefix = "3.", start = 11 },
   "coverage",
   "typing",
 ]
