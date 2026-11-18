@@ -38,10 +38,10 @@ def manager(
             storage_options["sftp.password"] = sftp.users[0].password
         case "keypair":
             storage_options["sftp.username"] = sftp.users[1].name
-            storage_options["sftp.pkey"] = sftp.users[1].private_key.decode("utf-8")  # type: ignore[union-attr]  # ty:ignore[unresolved-attribute]
+            storage_options["sftp.pkey"] = sftp.users[1].private_key.decode("utf-8")  # type: ignore[union-attr]  # ty: ignore[missing-union-attribute]
         case "keyfile":
             filepath = tmp_path / f"keyfile-{uuid.uuid4()}.pem"
-            filepath.write_text(sftp.users[1].private_key.decode("utf-8"))  # type: ignore[union-attr]  # ty:ignore[unresolved-attribute]
+            filepath.write_text(sftp.users[1].private_key.decode("utf-8"))  # type: ignore[union-attr]  # ty: ignore[missing-union-attribute]
             storage_options["sftp.username"] = sftp.users[1].name
             storage_options["sftp.key_filename"] = filepath.as_posix()
         case _:  # pragma: no cover
